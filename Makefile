@@ -9,7 +9,7 @@ rand_str=`uuidgen | fold -w5 | head -n1 | awk '{print tolower($0)}'`
 install: dry-run
 	@helm install . --name $(rel_name) --namespace $(ns) --values $(override)
 
-upgrade: init clean dep-build
+upgrade: init clean build
 	@helm upgrade $(rel_name) . --install --namespace $(ns) --values $(override)
 
 lint:
@@ -32,13 +32,13 @@ clean:
 dep-update:
 	@helm repo update
 
-dep-build:
+build: clean
 	@helm dependency build
 
-dry-run: init clean dep-build
+dry-run: init clean build
 	@helm upgrade $(rel_name) . --install --namespace $(ns) --dry-run
 
-debug: init clean dep-build
+debug: init clean build
 	@helm upgrade $(rel_name) . --install --namespace $(ns) --dry-run --debug > $(debug_fname)
 	@echo "* Output has been saved into $(debug_fname)"
 
