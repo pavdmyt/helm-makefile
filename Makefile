@@ -1,6 +1,6 @@
 rel_name='my-release'
 ns='default'
-override=''
+override='values.yaml'
 debug_fname='debug.out'
 debug_ctnr_image='cosmintitei/bash-curl:4.4.12'
 rand_str=`uuidgen | fold -w5 | head -n1 | awk '{print tolower($0)}'`
@@ -9,7 +9,7 @@ rand_str=`uuidgen | fold -w5 | head -n1 | awk '{print tolower($0)}'`
 install: dry-run
 	@helm install . --name $(rel_name) --namespace $(ns) --values $(override)
 
-upgrade: init clean build
+upgrade: dry-run
 	@helm upgrade $(rel_name) . --install --namespace $(ns) --values $(override)
 
 lint:
@@ -36,10 +36,10 @@ build: clean
 	@helm dependency build
 
 dry-run: init clean build
-	@helm upgrade $(rel_name) . --install --namespace $(ns) --dry-run
+	@helm upgrade $(rel_name) . --install --namespace $(ns) --values $(override) --dry-run
 
 debug: init clean build
-	@helm upgrade $(rel_name) . --install --namespace $(ns) --dry-run --debug > $(debug_fname)
+	@helm upgrade $(rel_name) . --install --namespace $(ns) --values $(override) --dry-run --debug > $(debug_fname)
 	@echo "* Output has been saved into $(debug_fname)"
 
 run-debug-ctnr:
