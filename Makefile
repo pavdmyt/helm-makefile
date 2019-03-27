@@ -32,7 +32,7 @@ clean:
 dep-update:
 	@helm repo update
 
-build: clean
+build: clean dep-update
 	@helm dependency build
 
 dry-run: init clean build
