@@ -13,7 +13,7 @@ upgrade: dry-run
 	@helm upgrade $(rel_name) . --install --namespace $(ns) --values $(override)
 
 lint:
-	@helm lint .
+	@helm lint . --namespace $(ns) --values $(override)
 
 render-all:
 	@find ./templates -type f -name "*.yaml" \
